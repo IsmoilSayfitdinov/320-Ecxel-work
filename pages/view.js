@@ -53,7 +53,7 @@ const ViewData = () => {
           </tr>
         </thead>
         <tbody>
-          {students.map((student, index) => (
+          {students?.map((student, index) => (
             <tr key={index}>
               <td style={styles.cell}>{student.fullName}</td>
               <td style={styles.cell}>{student.schoolNumber}</td>
