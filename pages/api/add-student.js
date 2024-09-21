@@ -1,29 +1,19 @@
-import fs from 'fs';
-import path from 'path';
 import ExcelJS from 'exceljs';
+import path from 'path';
+import fs from 'fs';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { fullName, schoolNumber, classNumber, dateOfBirth, fatherName, fatherWorkplace, motherName, motherWorkplace, address, notes } = req.body;
 
     const filePath = path.join(process.cwd(), '../../public', 'students.xlsx');
-    const dirPath = path.join(process.cwd(), '../../public'); // public katalogi
-
-    // public papkasini yaratish, agar mavjud bo'lmasa
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath);
-    }
-
-    let workbook;
+    const workbook = new ExcelJS.Workbook();
     let worksheet;
 
-    // Excel fayl mavjudligini tekshirish
     if (fs.existsSync(filePath)) {
-      workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(filePath);
       worksheet = workbook.getWorksheet(1);
     } else {
-      workbook = new ExcelJS.Workbook();
       worksheet = workbook.addWorksheet('Oquvchilar');
       worksheet.columns = [
         { header: 'F.I.Sh', key: 'fullName', width: 30 },

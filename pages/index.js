@@ -14,6 +14,8 @@ export default function StudentForm() {
     address: '',
     notes: '',
   });
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 
   const handleChange = (e) => {
     setFormData({
@@ -24,8 +26,7 @@ export default function StudentForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const res = await fetch('/api/add-student', {
+    const res = await fetch(`${apiUrl}/api/add-student`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

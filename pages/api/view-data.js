@@ -1,20 +1,21 @@
-import fs from 'fs';
-import path from 'path';
 import ExcelJS from 'exceljs';
+import path from 'path';
+import fs from 'fs';
 
 export default async function handler(req, res) {
   const filePath = path.join(process.cwd(), '../../public', 'students.xlsx');
+  console.log('File path:', filePath); // Bu yerda log qo'shdik
+  const workbook = new ExcelJS.Workbook();
 
   if (fs.existsSync(filePath)) {
-    const workbook = new ExcelJS.Workbook();
     try {
       await workbook.xlsx.readFile(filePath);
       const worksheet = workbook.getWorksheet(1);
-      const data = [];
+      const students = [];
 
       worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber !== 1) {
-          data.push({
+        if (rowNumber !== 1) { // Birinchi qatorni tashlab o'tamiz (sarlavhalar)
+          const student = {
             fullName: row.getCell(1).value,
             schoolNumber: row.getCell(2).value,
             class: row.getCell(3).value,
@@ -24,17 +25,20 @@ export default async function handler(req, res) {
             motherName: row.getCell(7).value,
             motherWorkplace: row.getCell(8).value,
             address: row.getCell(9).value,
-            notes: row.getCell(10).value,
-          });
+            notes: row.getCell(10).value
+          };
+          students.push(student);
         }
       });
 
-      res.status(200).json(data);
+      console.log('Students data:', students); // Log: Ma'lumotlarni ko'rib chiqish
+      res.status(200).json({ students });
     } catch (error) {
-      console.error("Error reading Excel file:", error);
-      res.status(500).json({ message: 'Faylni o\'qishda xato yuz berdi' });
+      console.error('Error reading file:', error); // Log: xatoni ko'rsatish
+      res.status(500).json({ message: 'Xatolik yuz berdi' });
     }
   } else {
-    res.status(404).json({ message: 'Excel fayli topilmadi' });
+    console.log('File not found:', filePath); // Log: Fayl topilmadi
+    res.status(404).json({ message: 'Ma\'lumotlar topilmadi' });
   }
 }

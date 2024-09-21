@@ -5,16 +5,16 @@ const ViewData = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch('/api/view-data');
+        const response = await fetch(`${apiUrl}/api/view-data`);
         if (!response.ok) {
           throw new Error('Failed to fetch students');
         }
         const data = await response.json();
-        setStudents(data);
+        setStudents(data.students); // API'dan kelayotgan ma'lumotlarni qo'shamiz
       } catch (error) {
         setError(error.message);
       } finally {
